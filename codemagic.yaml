@@ -18,6 +18,7 @@ workflows:
                   gradlePluginPortal()
               }
           }
+
           dependencyResolutionManagement {
               repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
               repositories {
@@ -25,6 +26,7 @@ workflows:
                   mavenCentral()
               }
           }
+
           rootProject.name = "TestFontSistema"
           include(":app")
           EOF
@@ -49,18 +51,33 @@ workflows:
               id("org.jetbrains.kotlin.android")
               id("org.jetbrains.kotlin.plugin.compose")
           }
+
           android {
               namespace = "com.meapps.fonttest"
               compileSdk = 35
+
               defaultConfig {
                   applicationId = "com.meapps.fonttest"
                   minSdk = 26
                   targetSdk = 35
-                  versionCode = 1
-                  versionName = "1.0"
+                  versionCode = 2
+                  versionName = "1.1"
               }
-              buildFeatures { compose = true }
+
+              compileOptions {
+                  sourceCompatibility = JavaVersion.VERSION_17
+                  targetCompatibility = JavaVersion.VERSION_17
+              }
+
+              kotlinOptions {
+                  jvmTarget = "17"
+              }
+
+              buildFeatures {
+                  compose = true
+              }
           }
+
           dependencies {
               implementation(platform("androidx.compose:compose-bom:2024.12.01"))
               implementation("androidx.activity:activity-compose:1.10.0")
@@ -95,6 +112,9 @@ workflows:
           <resources>
               <style name="Theme.TestFontSistema" parent="android:style/Theme.Material.Light.NoActionBar">
                   <item name="android:fontFamily">sans</item>
+                  <item name="android:windowLightStatusBar">true</item>
+                  <item name="android:statusBarColor">#FFFFFF</item>
+                  <item name="android:navigationBarColor">#FFFFFF</item>
               </style>
           </resources>
           EOF
@@ -106,8 +126,15 @@ workflows:
           import android.widget.TextView
           import androidx.activity.ComponentActivity
           import androidx.activity.compose.setContent
-          import androidx.compose.foundation.layout.*
-          import androidx.compose.material3.*
+          import androidx.compose.foundation.layout.Arrangement
+          import androidx.compose.foundation.layout.Column
+          import androidx.compose.foundation.layout.fillMaxSize
+          import androidx.compose.foundation.layout.fillMaxWidth
+          import androidx.compose.foundation.layout.padding
+          import androidx.compose.material3.Button
+          import androidx.compose.material3.MaterialTheme
+          import androidx.compose.material3.Surface
+          import androidx.compose.material3.Text
           import androidx.compose.runtime.Composable
           import androidx.compose.ui.Modifier
           import androidx.compose.ui.platform.LocalContext
@@ -131,12 +158,23 @@ workflows:
           @Composable
           fun FontSystemTest() {
               val context = LocalContext.current
+
               Column(
-                  modifier = Modifier.fillMaxSize().padding(24.dp),
+                  modifier = Modifier
+                      .fillMaxSize()
+                      .padding(24.dp),
                   verticalArrangement = Arrangement.spacedBy(22.dp)
               ) {
-                  Text("Test font di sistema", fontSize = 30.sp)
-                  Text("Questo testo è Jetpack Compose. Nessun font personalizzato.", fontSize = 21.sp)
+                  Text(
+                      text = "Test font di sistema",
+                      fontSize = 30.sp
+                  )
+
+                  Text(
+                      text = "Questo testo è Jetpack Compose. Nessun font personalizzato.",
+                      fontSize = 21.sp
+                  )
+
                   AndroidView(
                       modifier = Modifier.fillMaxWidth(),
                       factory = {
@@ -146,8 +184,15 @@ workflows:
                           }
                       }
                   )
-                  Button(onClick = {}) { Text("Pulsante Android") }
-                  Text("Aa Bb Cc 0123456789", fontSize = 28.sp)
+
+                  Button(onClick = {}) {
+                      Text("Pulsante Android")
+                  }
+
+                  Text(
+                      text = "Aa Bb Cc 0123456789",
+                      fontSize = 28.sp
+                  )
               }
           }
           EOF
